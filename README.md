@@ -2,8 +2,6 @@
 
 A neovim plugin for stealing trash pandas from the [racc.lol](https://racc.lol) API
 
-Alright Keiran — here’s a clean **installation section** you can drop straight into your `README.md` so people can install your `nvim-raccoon` plugin with `lazy.nvim` (and optionally `packer.nvim`).  
-
 ## Installation
 
 ### **Requirements**
