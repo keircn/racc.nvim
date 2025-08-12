@@ -32,7 +32,7 @@ function M.setup()
 				curl_time,
 				(plugin_end - plugin_start) / 1e9
 			)
-			vim.notify(msg, vim.log.levels.INFO)
+			vim.notify(msg, vim.log.levels.INFO, { timeout = 1000 })
 		else
 			vim.notify(" API returned an error", vim.log.levels.ERROR)
 		end
