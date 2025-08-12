@@ -2,13 +2,57 @@
 
 A neovim plugin for stealing trash pandas from the [racc.lol](https://racc.lol) API
 
-## Commands
+Alright Keiran — here’s a clean **installation section** you can drop straight into your `README.md` so people can install your `nvim-raccoon` plugin with `lazy.nvim` (and optionally `packer.nvim`).  
 
-Currently, we have the following commands:
+## Installation
 
-`:Racc` - checks the status of the API and the plugin :p
+### **Requirements**
+- Neovim **0.9+** (0.10+ recommended)
+- [`nvim-lua/plenary.nvim`](https://github.com/nvim-lua/plenary.nvim) (installed automatically if using `lazy.nvim`)
 
-`:RaccPlease` - we grab a raccoon out of the bin in ven's basement and throw it in your editor
+### **Using [lazy.nvim](https://github.com/folke/lazy.nvim)**
+
+```lua
+{
+    "keircn/racc.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+        require("racc").setup({
+            register = "+" -- default: system clipboard
+            -- register = '"' -- unnamed register
+            -- register = "*" -- primary selection (X11)
+        })
+    end,
+}
+```
+
+### **Using [packer.nvim](https://github.com/wbthomason/packer.nvim)**
+
+```lua
+use({
+    "keircn/racc.nvim",
+    requires = { "nvim-lua/plenary.nvim" },
+    config = function()
+        require("racc").setup({
+            register = "+"
+        })
+    end,
+})
+```
+
+## Usage
+
+- **Check API status**
+  ```
+  :Racc
+  ```
+  Shows whether the API is reachable and plugin performance stats.
+
+- **Get a random raccoon image URL**
+  ```
+  :RaccPlease
+  ```
+  Copies the image URL to your configured register (default: system clipboard) and shows details like index, dimensions, alt text, etc.
 
 ## License
 
