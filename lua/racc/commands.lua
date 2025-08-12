@@ -1,6 +1,10 @@
 local M = {}
 local api = require("racc.api")
 
+function M.setup(config)
+	M.config = config
+end
+
 function M.check_status()
 	local plugin_start = vim.uv.hrtime()
 	local data, err = api.get("/")
@@ -21,15 +25,18 @@ function M.check_status()
 	end
 end
 
-function M.get_raccoon_url()
+function M.get_raccoon_url(register)
 	local data, err = api.get("/raccoon?json=true")
 	if err then
 		vim.notify(err, vim.log.levels.ERROR)
 		return
 	end
 	if data.success and data.data and data.data.url then
-		vim.fn.setreg('"', data.data.url)
-		vim.notify(" Copied raccoon URL to register: " .. data.data.url, vim.log.levels.INFO)
+		vim.fn.setreg(register, data.data.url)
+		vim.notify(
+			string.format(" Copied raccoon URL to register '%s': %s", register, data.data.url),
+			vim.log.levels.INFO
+		)
 	else
 		vim.notify(" Failed to get raccoon URL", vim.log.levels.ERROR)
 	end
