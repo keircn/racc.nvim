@@ -24,8 +24,22 @@ end
 
 local function preview_image(url)
 	if supports_kitty_graphics() then
-		local job = vim.system({ "kitty", "+kitten", "icat", url }, { text = true })
-		job:wait()
+		local buf = vim.api.nvim_create_buf(false, true)
+		local width, height = 60, 30
+		local opts = {
+			relative = "editor",
+			width = width,
+			height = height,
+			col = math.floor((vim.o.columns - width) / 2),
+			row = math.floor((vim.o.lines - height) / 2),
+			style = "minimal",
+			border = "rounded",
+			title = "Raccoon Preview",
+			title_pos = "center",
+		}
+		vim.api.nvim_open_win(buf, true, opts)
+		vim.fn.jobstart({ "kitty", "+kitten", "icat", url }, { stdout_buffered = false, pty = true })
+		vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = buf, nowait = true, silent = true })
 	elseif vim.fn.executable("chafa") == 1 then
 		local buf, _ = create_float(60, 30, "Raccoon Preview")
 		local job = vim.system({ "chafa", url }, { text = true })
