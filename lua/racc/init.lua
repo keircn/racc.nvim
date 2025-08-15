@@ -1,5 +1,6 @@
 local M = {}
 local commands = require("racc.commands")
+local log = require("racc.log")
 
 M.config = {
 	register = "+",
@@ -7,6 +8,7 @@ M.config = {
 
 function M.setup(opts)
 	M.config = vim.tbl_extend("force", M.config, opts or {})
+	log.info("Plugin setup", { config = M.config })
 	commands.setup(M.config)
 	vim.api.nvim_create_user_command("Racc", commands.check_status, { desc = "Check Raccoon API status" })
 	vim.api.nvim_create_user_command("RaccPlease", function(cmd)
@@ -38,6 +40,9 @@ function M.setup(opts)
 	end, { desc = "Get meme by ID", nargs = 1 })
 	vim.api.nvim_create_user_command("RaccList", commands.list_raccoons, { desc = "List available raccoons" })
 	vim.api.nvim_create_user_command("RaccMemeList", commands.list_memes, { desc = "List available memes" })
+	vim.api.nvim_create_user_command("RaccLog", commands.view_log, { desc = "View plugin log file" })
+	vim.api.nvim_create_user_command("RaccClearLog", commands.clear_log, { desc = "Clear plugin log file" })
+	log.info("Plugin setup complete - all commands registered")
 end
 
 return M

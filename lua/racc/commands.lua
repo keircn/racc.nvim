@@ -1,8 +1,38 @@
 local M = {}
 local api = require("racc.api")
+local log = require("racc.log")
 
 function M.setup(config)
 	M.config = config
+	log.info("Commands module setup", { config = config })
+end
+
+function M.check_status()
+	log.info("Checking API status")
+	local plugin_start = vim.uv.hrtime()
+	api.get("/", function(data, err)
+		local plugin_end = vim.uv.hrtime()
+		if err then
+			log.error("Status check failed", { error = err, time = (plugin_end - plugin_start) / 1e9 })
+			vim.notify(err, vim.log.levels.ERROR)
+			return
+		end
+		if data.success then
+			log.info("Status check successful", { 
+				message = data.message, 
+				time = (plugin_end - plugin_start) / 1e9 
+			})
+			local msg = string.format(
+				" Raccoon API reachable\nMessage: %s\nPlugin time: %.3f sec",
+				data.message,
+				(plugin_end - plugin_start) / 1e9
+			)
+			vim.notify(msg, vim.log.levels.INFO)
+		else
+			log.error("Status check returned false", { data = data })
+			vim.notify(" API returned an error", vim.log.levels.ERROR)
+		end
+	end)
 end
 
 function M.check_status()
@@ -27,6 +57,7 @@ function M.check_status()
 end
 
 function M.get_raccoon_url(register, params)
+	log.info("Getting raccoon URL", { register = register, params = params })
 	local query_params = "json=true"
 	if params then
 		if params.daily then
@@ -37,15 +68,21 @@ function M.get_raccoon_url(register, params)
 			query_params = query_params .. "&weekly=true"
 		end
 	end
-
+	
 	local plugin_start = vim.uv.hrtime()
 	api.get("/raccoon?" .. query_params, function(data, err)
 		local plugin_end = vim.uv.hrtime()
 		if err then
+			log.error("Get raccoon URL failed", { error = err, params = params })
 			vim.notify(err, vim.log.levels.ERROR)
 			return
 		end
 		if data.success and data.data and data.data.url then
+			log.info("Get raccoon URL successful", { 
+				url = data.data.url,
+				index = data.data.index,
+				dimensions = { width = data.data.width, height = data.data.height }
+			})
 			vim.fn.setreg(register, data.data.url)
 			local time_info = ""
 			if params and params.daily then
@@ -68,6 +105,7 @@ function M.get_raccoon_url(register, params)
 			)
 			vim.notify(msg, vim.log.levels.INFO)
 		else
+			log.error("Get raccoon URL failed - invalid response", { data = data })
 			vim.notify(" Failed to get raccoon URL", vim.log.levels.ERROR)
 		end
 	end)
@@ -262,15 +300,18 @@ function M.list_raccoons()
 end
 
 function M.list_memes()
+	log.info("Listing available memes")
 	local plugin_start = vim.uv.hrtime()
 	api.get("/memes", function(data, err)
 		local plugin_end = vim.uv.hrtime()
 		if err then
+			log.error("List memes failed", { error = err })
 			vim.notify(err, vim.log.levels.ERROR)
 			return
 		end
 		if data.success and data.data then
 			local count = #data.data
+			log.info("List memes successful", { count = count })
 			local msg = string.format(
 				" Found %d memes available\nUse :RaccMemeById <id> to get a specific meme\nPlugin time: %.3f sec",
 				count,
@@ -278,9 +319,21 @@ function M.list_memes()
 			)
 			vim.notify(msg, vim.log.levels.INFO)
 		else
+			log.error("List memes failed - invalid response", { data = data })
 			vim.notify(" Failed to get meme list", vim.log.levels.ERROR)
 		end
 	end)
+end
+
+function M.view_log()
+	local log_path = log.get_log_path()
+	log.info("Opening log file", { path = log_path })
+	vim.cmd("edit " .. log_path)
+end
+
+function M.clear_log()
+	log.clear_log()
+	vim.notify(" Log cleared", vim.log.levels.INFO)
 end
 
 return M
