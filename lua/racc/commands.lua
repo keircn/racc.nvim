@@ -189,25 +189,28 @@ function M.get_raccoon_fact(register)
 end
 
 function M.get_api_stats()
+	log.info("Getting API statistics")
 	local plugin_start = vim.uv.hrtime()
 	api.get("/stats", function(data, err)
 		local plugin_end = vim.uv.hrtime()
 		if err then
+			log.error("Get API stats failed", { error = err })
 			vim.notify(err, vim.log.levels.ERROR)
 			return
 		end
 		if data.success and data.data then
 			local stats = data.data
+			log.info("Get API stats successful", { stats = stats })
 			local msg = string.format(
-				" API Statistics:\nTotal Raccoons: %s\nTotal Memes: %s\nTotal Videos: %s\nTotal Requests: %s\nPlugin time: %.3f sec",
-				stats.raccoons or "N/A",
-				stats.memes or "N/A",
+				" API Statistics:\nTotal Photos: %s\nTotal Memes: %s\nTotal Videos: %s\nPlugin time: %.3f sec",
+				stats.photos or "N/A",
+				stats.memes or "N/A", 
 				stats.videos or "N/A",
-				stats.requests or "N/A",
 				(plugin_end - plugin_start) / 1e9
 			)
 			vim.notify(msg, vim.log.levels.INFO)
 		else
+			log.error("Get API stats failed - invalid response", { data = data })
 			vim.notify(" Failed to get API statistics", vim.log.levels.ERROR)
 		end
 	end)

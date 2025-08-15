@@ -1,5 +1,5 @@
 local M = {}
-local BASE_URL = "https://api.racc.lol/v1"
+local BASE_URL = "https://api.racc.lol"
 local curl = require("plenary.curl")
 local log = require("racc.log")
 
