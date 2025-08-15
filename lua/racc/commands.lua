@@ -18,9 +18,9 @@ function M.check_status()
 			return
 		end
 		if data.success then
-			log.info("Status check successful", { 
-				message = data.message, 
-				time = (plugin_end - plugin_start) / 1e9 
+			log.info("Status check successful", {
+				message = data.message,
+				time = (plugin_end - plugin_start) / 1e9,
 			})
 			local msg = string.format(
 				" Raccoon API reachable\nMessage: %s\nPlugin time: %.3f sec",
@@ -68,7 +68,7 @@ function M.get_raccoon_url(register, params)
 			query_params = query_params .. "&weekly=true"
 		end
 	end
-	
+
 	local plugin_start = vim.uv.hrtime()
 	api.get("/raccoon?" .. query_params, function(data, err)
 		local plugin_end = vim.uv.hrtime()
@@ -78,10 +78,10 @@ function M.get_raccoon_url(register, params)
 			return
 		end
 		if data.success and data.data and data.data.url then
-			log.info("Get raccoon URL successful", { 
+			log.info("Get raccoon URL successful", {
 				url = data.data.url,
 				index = data.data.index,
-				dimensions = { width = data.data.width, height = data.data.height }
+				dimensions = { width = data.data.width, height = data.data.height },
 			})
 			vim.fn.setreg(register, data.data.url)
 			local time_info = ""
@@ -204,7 +204,7 @@ function M.get_api_stats()
 			local msg = string.format(
 				" API Statistics:\nTotal Photos: %s\nTotal Memes: %s\nTotal Videos: %s\nPlugin time: %.3f sec",
 				stats.photos or "N/A",
-				stats.memes or "N/A", 
+				stats.memes or "N/A",
 				stats.videos or "N/A",
 				(plugin_end - plugin_start) / 1e9
 			)

@@ -8,9 +8,9 @@ end
 local function write_log(level, message, data)
 	local log_path = get_log_path()
 	local timestamp = os.date("%Y-%m-%d %H:%M:%S")
-	
+
 	local log_entry = string.format("[%s] [%s] %s", timestamp, level, message)
-	
+
 	if data then
 		if type(data) == "table" then
 			local ok, json_data = pcall(vim.json.encode, data)
@@ -23,9 +23,9 @@ local function write_log(level, message, data)
 			log_entry = log_entry .. "\nData: " .. tostring(data)
 		end
 	end
-	
+
 	log_entry = log_entry .. "\n"
-	
+
 	local file = io.open(log_path, "a")
 	if file then
 		file:write(log_entry)
