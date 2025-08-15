@@ -37,7 +37,7 @@ function M.get_raccoon_url(register, params)
 			query_params = query_params .. "&weekly=true"
 		end
 	end
-	
+
 	local plugin_start = vim.uv.hrtime()
 	api.get("/raccoon?" .. query_params, function(data, err)
 		local plugin_end = vim.uv.hrtime()
@@ -163,7 +163,7 @@ function M.get_api_stats()
 			local msg = string.format(
 				" API Statistics:\nTotal Raccoons: %s\nTotal Memes: %s\nTotal Videos: %s\nTotal Requests: %s\nPlugin time: %.3f sec",
 				stats.raccoons or "N/A",
-				stats.memes or "N/A", 
+				stats.memes or "N/A",
 				stats.videos or "N/A",
 				stats.requests or "N/A",
 				(plugin_end - plugin_start) / 1e9
@@ -180,7 +180,7 @@ function M.get_raccoon_by_id(register, id)
 		vim.notify(" Please provide a raccoon ID", vim.log.levels.ERROR)
 		return
 	end
-	
+
 	local plugin_start = vim.uv.hrtime()
 	api.get("/raccoon/" .. id .. "?json=true", function(data, err)
 		local plugin_end = vim.uv.hrtime()
@@ -212,7 +212,7 @@ function M.get_meme_by_id(register, id)
 		vim.notify(" Please provide a meme ID", vim.log.levels.ERROR)
 		return
 	end
-	
+
 	local plugin_start = vim.uv.hrtime()
 	api.get("/meme/" .. id .. "?json=true", function(data, err)
 		local plugin_end = vim.uv.hrtime()
