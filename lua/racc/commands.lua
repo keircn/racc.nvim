@@ -282,23 +282,5 @@ function M.list_memes()
 		end
 	end)
 end
-		if data.success and data.data and data.data.url then
-			vim.fn.setreg(register, data.data.url)
-			local msg = string.format(
-				" Copied raccoon URL to register '%s'\nURL: %s\nIndex: %d\nDimensions: %dx%d\nAlt: %s\nPlugin time: %.3f sec",
-				register,
-				data.data.url,
-				data.data.index or -1,
-				data.data.width or -1,
-				data.data.height or -1,
-				data.data.alt or "N/A",
-				(plugin_end - plugin_start) / 1e9
-			)
-			vim.notify(msg, vim.log.levels.INFO)
-		else
-			vim.notify(" Failed to get raccoon URL", vim.log.levels.ERROR)
-		end
-	end)
-end
 
 return M
